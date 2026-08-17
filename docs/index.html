@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Opportunity Scoring — A Search Portfolio Capstone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2430;
+    --bg:#F6F4EE;
+    --panel:#FFFFFF;
+    --signal:#175C52;
+    --signal-soft:#DCEAE6;
+    --gold:#B4832E;
+    --rule:#D8D3C6;
+    --muted:#6B6459;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.6;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- Masthead ---------- */
+  header.masthead{
+    border-bottom:1px solid var(--rule);
+    padding:56px 0 40px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--signal);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px;height:1px;background:var(--signal);display:inline-block;
+  }
+  h1.title{
+    font-family:'Newsreader',serif;
+    font-weight:500;
+    font-size:clamp(34px,5vw,52px);
+    line-height:1.08;
+    margin:0 0 18px;
+    letter-spacing:-0.01em;
+  }
+  .dek{
+    font-size:18px;
+    color:var(--muted);
+    max-width:60ch;
+    margin:0 0 26px;
+  }
+  .byline{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--muted);
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 18px;
+  }
+  .byline b{color:var(--ink);font-weight:500;}
+
+  /* ---------- Signature: the pipeline flow ---------- */
+  .pipeline{
+    margin:40px 0 8px;
+    padding:26px 22px;
+    background:var(--panel);
+    border:1px solid var(--rule);
+    border-radius:2px;
+  }
+  .pipeline-row{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:0;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+  }
+  .pipeline-node{
+    padding:8px 14px;
+    border:1px solid var(--rule);
+    border-radius:3px;
+    background:var(--bg);
+    white-space:nowrap;
+  }
+  .pipeline-node.active{
+    border-color:var(--signal);
+    background:var(--signal-soft);
+    color:var(--signal);
+    font-weight:600;
+  }
+  .pipeline-arrow{
+    color:var(--muted);
+    padding:0 10px;
+    font-size:14px;
+  }
+  .pipeline-caption{
+    margin-top:14px;
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  /* ---------- Sections ---------- */
+  main{padding:44px 0 100px;}
+  section{margin-bottom:56px;}
+  section h2{
+    font-family:'Newsreader',serif;
+    font-weight:500;
+    font-size:26px;
+    margin:0 0 4px;
+    padding-bottom:12px;
+    border-bottom:1px solid var(--rule);
+  }
+  .section-hint{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--signal);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin:0 0 20px;
+  }
+  section h3{
+    font-family:'Newsreader',serif;
+    font-weight:600;
+    font-size:18px;
+    margin:28px 0 10px;
+  }
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:22px;}
+  li{margin-bottom:8px;}
+  strong{font-weight:600;}
+  code, .mono{font-family:'IBM Plex Mono',monospace;font-size:0.92em;}
+
+  .callout{
+    background:var(--panel);
+    border-left:3px solid var(--signal);
+    padding:16px 20px;
+    font-size:15px;
+    color:var(--ink);
+    margin:20px 0;
+  }
+  .callout b{color:var(--signal);}
+
+  .limit-item{
+    display:flex;
+    gap:14px;
+    padding:14px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .limit-item:last-child{border-bottom:none;}
+  .limit-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--gold);
+    padding-top:3px;
+    min-width:20px;
+  }
+
+  table.results{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0 8px;
+    font-size:14.5px;
+  }
+  table.results th, table.results td{
+    text-align:left;
+    padding:10px 12px;
+    border-bottom:1px solid var(--rule);
+  }
+  table.results th{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--muted);
+    font-weight:500;
+  }
+  table.results td.win{color:var(--signal);font-weight:600;}
+
+  figure{margin:24px 0;}
+  figure img{
+    width:100%;
+    border:1px solid var(--rule);
+    border-radius:2px;
+    display:block;
+  }
+  figcaption{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:8px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+
+  .queue-sample{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12.5px;
+    font-family:'IBM Plex Mono',monospace;
+    margin:16px 0;
+  }
+  .queue-sample th, .queue-sample td{
+    padding:7px 10px;
+    border-bottom:1px solid var(--rule);
+    text-align:left;
+  }
+  .queue-sample th{color:var(--muted);font-weight:500;text-transform:uppercase;font-size:10.5px;}
+
+  .repro-list a{color:var(--signal);text-decoration:none;border-bottom:1px solid var(--signal-soft);}
+  .repro-list a:hover{border-bottom-color:var(--signal);}
+
+  footer{
+    border-top:1px solid var(--rule);
+    padding:36px 0 60px;
+    font-size:13.5px;
+    color:var(--muted);
+  }
+  footer a{color:var(--signal);text-decoration:none;}
+  footer a:hover{text-decoration:underline;}
+
+  @media (max-width:600px){
+    .pipeline-row{gap:8px;}
+    .pipeline-arrow{display:none;}
+    .pipeline-node{width:100%;}
+  }
+
+  :focus-visible{outline:2px solid var(--signal);outline-offset:2px;}
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Search Intelligence Capstone · Lane 2 — Refresh &amp; Content Opportunity Scoring</div>
+    <h1 class="title">Which pages are quietly declining — and what should a reviewer check first?</h1>
+    <p class="dek">A validated decision-tree model, tested against a hand-written baseline on an honest, client-grouped split, turned into a ranked, reason-coded action queue for content teams.</p>
+    <div class="byline">
+      <span><b>Author</b> Abdullah Farooq</span>
+      <span><b>Program</b> FlyRank ML Internship</span>
+      <span><b>Status</b> Capstone, deployed</span>
+    </div>
+  </header>
+
+  <div class="pipeline">
+    <div class="pipeline-row">
+      <span class="pipeline-node">Portfolio data</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-node">5 safe features</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-node active">Decision tree</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-node">Ranked score</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-node">Human review</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-node">Action</span>
+    </div>
+    <p class="pipeline-caption">Every page that reaches "Action" in this pipeline passes through a human first — the model narrows the list, it does not make the call.</p>
+  </div>
+
+  <main>
+
+    <section id="abstract">
+      <h2>Abstract</h2>
+      <p class="section-hint">Question → method → result, in five sentences</p>
+      <p>This paper asks which content pages in a large search portfolio are likely declining in visibility, and what a reviewer should check first. We trained a Decision Tree classifier on five features known before any decision is made about a page — content age, days since last update, average position, click-through rate, and word count — using FlyRank's anonymized content-performance data. Validation used a client-grouped split rather than a random one, to prevent the model from memorizing client identity instead of learning a generalizable pattern; a leakage audit further excluded one candidate feature whose time window overlapped the label's own construction. On this honest split, the model reached <strong>Precision@20 of 0.650</strong> against a hand-written baseline's 0.500, while the baseline held a narrow edge at <strong>Precision@50 (0.620 vs 0.600)</strong>. The validated scores feed a ranked, reason-coded action queue with explicit human-review requirements and a documented no-go list — a decision-support shortlist, not a certainty score, meant to help a content team spend limited review time where it counts most.</p>
+    </section>
+
+    <section id="intro">
+      <h2>Introduction</h2>
+      <p class="section-hint">The problem this work supports</p>
+      <p>A content team managing a large portfolio cannot manually review every page for signs of decline. Early exploration of this dataset showed the scale of the problem directly: of roughly 30,000 active content pages sampled, <strong>16,262 — over half — were already labeled as trending down</strong> in the most recent 30-day window. At the same time, a simple positional pattern was visible immediately: pages ranking on page one of search results averaged a 35.5% click-through rate, against just 5.5% for pages ranked in the "deep" tier. Both facts point the same direction — there is a large enough pool of at-risk pages, and a measurable enough pattern, to justify building a ranked review system rather than relying on manual spot-checks or a single fixed rule.</p>
+      <div class="callout"><b>The decision this supports:</b> a prioritized, reason-coded shortlist that tells a reviewer which pages to look at first, and why — not an automated publishing or de-indexing decision.</div>
+    </section>
+
+    <section id="data">
+      <h2>Data</h2>
+      <p class="section-hint">Source, scope, and what was excluded</p>
+      <p><strong>Source.</strong> FlyRank's ML Internship data warehouse (<code>fact_content_daily_performance</code>), accessed through a read-only, gated release. One row represents one content page, for one client, on one day.</p>
+      <p><strong>Modeling dataset.</strong> An anonymized starter export of ~30,000 active content pages (<code>content_refresh_anonymized.csv</code>), drawn from the warehouse's broader monthly slices (a single explored month, 2026-03, alone spanned 9.8 million rows).</p>
+      <p><strong>Label.</strong> <code>is_declining_label = 1</code> when a page's <code>trend_direction</code> reads "down" — a 30-day-vs-prior-30-day impressions comparison. This is a proxy for "worth reviewing now," not a confirmed long-term outcome.</p>
+      <h3>What was excluded, and why</h3>
+      <ul>
+        <li><strong>Any internal product decision flags</strong> (e.g. health score, priority score, action type) — not present in the modeling export, and would count as leakage if reconstructed, since they encode a decision already made rather than an independent signal.</li>
+        <li><strong>90-day impressions</strong> as a feature — evaluated and dropped after a leakage audit found its window overlaps the label's own 30-day construction (see Methodology).</li>
+        <li><strong>Client identity</strong> as a feature — used only to define the validation split boundary, never shown or passed to the model.</li>
+        <li><strong>No client names, domains, URLs, or private queries</strong> appear anywhere in this paper, its notebooks, or its outputs.</li>
+      </ul>
+    </section>
+
+    <section id="methodology">
+      <h2>Methodology</h2>
+      <p class="section-hint">Assumptions, features, validation design, leakage checks</p>
+      <p><strong>Task framing.</strong> A hybrid classification-and-ranking task: pages are first classified as likely declining or not, then the model's predicted probability becomes a ranked score — because a reviewer needs an ordered shortlist, not a binary flag.</p>
+      <p><strong>Model.</strong> A Decision Tree (<code>max_depth=4</code>, <code>class_weight="balanced"</code>), chosen for interpretability. A decision-support tool needs a traceable "why," not a black-box number.</p>
+      <p><strong>Final feature set.</strong> <code>content_age_days</code>, <code>days_since_last_update</code>, <code>avg_position</code>, <code>ctr</code>, <code>word_count</code>.</p>
+      <p><strong>Success metric.</strong> Precision@K, at K=20 and K=50 — chosen because a reviewer only checks the top of the queue, so what matters is how many of the top K flagged pages are genuinely declining, not accuracy across the full portfolio.</p>
+      <p><strong>Baseline.</strong> A hand-written rule — pages with 180+ days since their last update <em>and</em> 500+ impressions in the last 90 days, scored proportional to traffic. This rule was validated on its own first: among the pages matching "stale and visible," 94.1% were genuinely declining, versus 54.2% among all other pages — confirming the signal was real before using it as a comparison point.</p>
+      <p><strong>Validation design.</strong> A client-grouped split (75/25, zero client overlap confirmed between train and test) rather than a random split. Pages from the same client share structural similarities; a random split risks the model memorizing client identity instead of a generalizable pattern. Run side-by-side, the random split overstated Precision@20 by as much as 25 points relative to the honest, grouped split — a direct, measured demonstration of the risk.</p>
+      <p><strong>Leakage checks.</strong> Two passes: (1) confirming the score is built only from features known before any decision was made about a page, never from the label itself or a downstream product flag; (2) testing <code>impressions_90d</code> specifically — it showed near-zero correlation with the label (-0.018), and removing it did not hurt held-out precision, so it was dropped as a precaution against its partial window overlap with the label.</p>
+    </section>
+
+    <section id="results">
+      <h2>Results</h2>
+      <p class="section-hint">Model vs. baseline, same honest split</p>
+      <table class="results">
+        <thead>
+          <tr><th>Metric</th><th>Baseline rule</th><th>Model</th><th>Which is ahead</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Precision@20</td><td>0.500</td><td class="win">0.650</td><td class="win">Model, +0.150</td></tr>
+          <tr><td>Precision@50</td><td class="win">0.620</td><td>0.600</td><td class="win">Baseline, +0.020</td></tr>
+        </tbody>
+      </table>
+      <figure>
+        <img src="figures/capstone_results.png" alt="Bar chart comparing baseline and model precision at K=20 and K=50 on the honest client-grouped split">
+        <figcaption>Fig. 1 — Model vs. baseline, Precision@20 / Precision@50, honest client-grouped split.</figcaption>
+      </figure>
+      <p>Neither method dominates across both metrics. The model pulls ahead at the very top of the queue (Precision@20), where reviewer time is most limited and precision matters most — while the baseline holds a narrow edge once the net widens to the top 50. This is consistent with the model's own decision paths: it flags pages the single-threshold baseline structurally cannot see — 2,896 held-out pages where the model was confident (&gt;0.7) but the baseline scored zero, of which 58.6% were genuinely declining.</p>
+      <figure>
+        <img src="figures/w07_top_drivers.png" alt="Bar chart of which features appear most often in reason codes for the top 20 percent of the ranked queue">
+        <figcaption>Fig. 2 — Which features drive the highest-priority flags: <code>content_age_days</code>, <code>avg_position</code>, and <code>ctr</code> dominate; <code>days_since_last_update</code> and <code>word_count</code> rarely appear at the very top.</figcaption>
+      </figure>
+      <figure>
+        <img src="figures/w07_score_distribution.png" alt="Histogram showing the distribution of decline scores across the held-out test set">
+        <figcaption>Fig. 3 — Distribution of decline scores. A shallow tree means many pages share an identical score — a known limitation, addressed in the action queue with a secondary tiebreak and per-page reason codes.</figcaption>
+      </figure>
+    </section>
+
+    <section id="limitations">
+      <h2>Limitations &amp; Honest Framing</h2>
+      <p class="section-hint">What this work cannot claim</p>
+
+      <div class="limit-item"><span class="limit-num">01</span><p><strong>Correlational, not causal.</strong> This work observes patterns — it does not prove that refreshing a flagged page will cause traffic to recover. That would require an actual experiment.</p></div>
+      <div class="limit-item"><span class="limit-num">02</span><p><strong>No claims about Google's algorithm.</strong> This paper describes patterns in FlyRank's own anonymized data only.</p></div>
+      <div class="limit-item"><span class="limit-num">03</span><p><strong>Proxy label.</strong> The decline label reflects a 30-day momentum window, not a confirmed long-term outcome — it can be noisy (seasonality, a temporary dip).</p></div>
+      <div class="limit-item"><span class="limit-num">04</span><p><strong>Portfolio-specific.</strong> Trained and validated on this portfolio only; not yet validated on unseen brands, industries, or markets.</p></div>
+      <div class="limit-item"><span class="limit-num">05</span><p><strong>Coarse model.</strong> A shallow tree means many pages share an identical score — this is a triage signal, not a precise per-page ranking.</p></div>
+      <div class="limit-item"><span class="limit-num">06</span><p><strong>Moderate precision.</strong> Roughly one in three to one in two flagged pages in the top 20–50 will not actually be declining. This is a shortlist for human review, never the sole basis for an action.</p></div>
+      <div class="limit-item"><span class="limit-num">07</span><p><strong>Single-snapshot validation.</strong> Results come from one historical split; performance has not yet been checked on a rolling, live basis.</p></div>
+      <div class="limit-item"><span class="limit-num">08</span><p><strong>No engagement signal at scale.</strong> Session-level engagement data covers only a small fraction of the full warehouse; this model relies on search-console and content-metadata signals instead.</p></div>
+    </section>
+
+    <section id="recommendations">
+      <h2>Ranked Recommendations</h2>
+      <p class="section-hint">From score to action — the playbook this paper ships with</p>
+
+      <h3>Archetype → action mapping</h3>
+      <ul>
+        <li><strong>High decline score + stale:</strong> refresh candidate — update facts and examples, resubmit for recrawl.</li>
+        <li><strong>High decline score + weak position, recently updated:</strong> likely a relevance issue, not a freshness one — review content-market fit before refreshing again.</li>
+        <li><strong>High decline score + thin content:</strong> expansion candidate — add missing subtopics and depth, not a light edit.</li>
+        <li><strong>Low decline score, strong position:</strong> leave alone; monitor only.</li>
+      </ul>
+
+      <h3>Sample of the ranked queue</h3>
+      <table class="queue-sample">
+        <thead><tr><th>Rank</th><th>Decline score</th><th>Reason (summary)</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>0.85</td><td>Weak avg. position; long stretch since last update</td></tr>
+          <tr><td>2</td><td>0.85</td><td>Weak avg. position; older content age</td></tr>
+          <tr><td>3</td><td>0.85</td><td>Weak avg. position; younger, but still flagged</td></tr>
+          <tr><td>…</td><td>…</td><td>…</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--muted);">Full queue regenerated on demand from <code>work/notebooks/w07_action_playbook.ipynb</code> — not committed as raw data, by design (see Reproducibility).</p>
+
+      <h3>Human review is required</h3>
+      <p>Before any action from this queue is taken, a reviewer must confirm the page is actually declining against current data, check for an explainable cause (seasonality, migration, algorithm update), and read the page itself — the model has no access to writing quality, accuracy, or brand voice.</p>
+
+      <h3>What should never be automated</h3>
+      <ul>
+        <li>Auto-publishing content changes without editorial review.</li>
+        <li>Auto-deleting, de-indexing, or redirecting pages from a score alone.</li>
+        <li>Using the score as a performance metric for individual writers.</li>
+        <li>Presenting the score to a client as certainty rather than a triage signal.</li>
+      </ul>
+
+      <h3>Monitoring &amp; retrain triggers</h3>
+      <p>Re-validate when Precision@20 on a fresh client-grouped sample drops below ~0.55, the label definition changes, roughly 90 days pass since the last check, or a structurally new client segment joins the portfolio.</p>
+    </section>
+
+    <section id="reproducibility">
+      <h2>Reproducibility</h2>
+      <p class="section-hint">Everything here can be rerun</p>
+      <ul class="repro-list">
+        <li><a href="https://github.com/Abdullah-Farooq292/flyrank-ml-internship">Full repository</a> — every weekly notebook plus this capstone.</li>
+        <li><a href="https://github.com/Abdullah-Farooq292/flyrank-ml-internship/blob/main/work/notebooks/capstone.ipynb">work/notebooks/capstone.ipynb</a> — this paper's source notebook.</li>
+        <li><a href="https://github.com/Abdullah-Farooq292/flyrank-ml-internship/blob/main/work/notebooks/w07_action_playbook.ipynb">work/notebooks/w07_action_playbook.ipynb</a> — the ranked action queue in full.</li>
+        <li><a href="https://github.com/Abdullah-Farooq292/flyrank-ml-internship/blob/main/work/outputs/w07_metrics.json">work/outputs/w07_metrics.json</a> — the metrics every number here traces back to.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer>
+    <p><strong>Acknowledgments &amp; data credit.</strong> Built on the FlyRank ML Internship dataset — <a href="https://flyrank.ai" target="_blank" rel="noopener">flyrank.ai</a>.</p>
+    <p>All findings are observed, measured, and directional — offered as decision-support, not proof of causal or algorithmic effect.</p>
+  </footer>
+</div>
+
+</body>
+</html>
