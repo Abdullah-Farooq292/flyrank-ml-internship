@@ -1,0 +1,12 @@
+{
+  "model": "DecisionTreeClassifier(max_depth=4, class_weight='balanced')",
+  "features": ["content_age_days", "days_since_last_update", "avg_position", "ctr", "word_count"],
+  "split": "GroupShuffleSplit by client_id, test_size=0.25, random_state=42",
+  "validated_precision": {
+    "baseline_precision_at_20": 0.500,
+    "baseline_precision_at_50": 0.620,
+    "model_precision_at_20": 0.650,
+    "model_precision_at_50": 0.600
+  },
+  "leakage_audit_note": "impressions_90d excluded - near-zero correlation (-0.018) with label, removing it did not hurt performance"
+}
