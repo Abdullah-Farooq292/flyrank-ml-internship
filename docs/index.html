@@ -334,11 +334,11 @@
       </figure>
       <p>Neither method dominates across both metrics. The model pulls ahead at the very top of the queue (Precision@20), where reviewer time is most limited and precision matters most — while the baseline holds a narrow edge once the net widens to the top 50. This is consistent with the model's own decision paths: it flags pages the single-threshold baseline structurally cannot see — 2,896 held-out pages where the model was confident (&gt;0.7) but the baseline scored zero, of which 58.6% were genuinely declining.</p>
       <figure>
-        <img src="figures/w07_top_drivers.png" alt="Bar chart of which features appear most often in reason codes for the top 20 percent of the ranked queue">
+        <img src="figures/w07_top_drivers.PNG" alt="Bar chart of which features appear most often in reason codes for the top 20 percent of the ranked queue">
         <figcaption>Fig. 2 — Which features drive the highest-priority flags: <code>content_age_days</code>, <code>avg_position</code>, and <code>ctr</code> dominate; <code>days_since_last_update</code> and <code>word_count</code> rarely appear at the very top.</figcaption>
       </figure>
       <figure>
-        <img src="figures/w07_score_distribution.png" alt="Histogram showing the distribution of decline scores across the held-out test set">
+        <img src="figures/w07_score_distribution.PNG" alt="Histogram showing the distribution of decline scores across the held-out test set">
         <figcaption>Fig. 3 — Distribution of decline scores. A shallow tree means many pages share an identical score — a known limitation, addressed in the action queue with a secondary tiebreak and per-page reason codes.</figcaption>
       </figure>
     </section>
